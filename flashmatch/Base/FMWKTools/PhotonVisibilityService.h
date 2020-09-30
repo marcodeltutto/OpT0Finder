@@ -26,7 +26,7 @@ namespace phot{
    
     //PhotonVisibilityService(fhicl::ParameterSet const& pset, art::ActivityRegistry& reg);
     //PhotonVisibilityService(const std::string library="uboone_photon_library_v5.root");
-    PhotonVisibilityService(const std::string library="PhotonLibrary-20180801.root");
+    PhotonVisibilityService(const std::string library="PhotonLibrary-20200816.root");
     
     //void reconfigure(fhicl::ParameterSet const& p);
     
@@ -81,7 +81,7 @@ namespace phot{
 
     const std::string& GetLibraryFilename() { return fLibraryFile; }; // Allows one to check loaded filename
 
-    static PhotonVisibilityService& GetME(std::string filename="PhotonLibrary-20180801.root")
+    static PhotonVisibilityService& GetME(std::string filename="PhotonLibrary-20200816.root")
     {
       // argument allows user to choose file loaded
       // if relative, searches for file in designated folder
