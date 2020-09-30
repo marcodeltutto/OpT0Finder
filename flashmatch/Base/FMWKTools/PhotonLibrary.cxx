@@ -107,7 +107,7 @@ namespace phot{
 	if(!f) {
 	  std::cerr<<"\033[95m<<"<<__FUNCTION__<<">>\033[00m " << "Failed to open a ROOT file: " << LibraryFile.c_str()<<std::endl;
 	  std::cerr<<"If you don't have photon library data file, download from below URL..."<<std::endl;
-	  std::cerr<<"/cvmfs/icarus.opensciencegrid.org/products/icarus/icarus_data/v08_28_00/icarus_data/PhotonLibrary/PhotonLibrary-20180801.root"<<std::endl<<std::endl;
+	  std::cerr<<"/cvmfs/icarus.opensciencegrid.org/products/icarus/icarus_data/v08_28_00/icarus_data/PhotonLibrary/PhotonLibrary-20200816.root"<<std::endl<<std::endl;
 	  throw std::exception();
 	}
 	tt =  (TTree*)f->Get("PhotonLibraryData");
@@ -144,9 +144,15 @@ namespace phot{
 
 
     size_t NEntries = tt->GetEntries();
+    std::cout << "NEntries: " << NEntries << std::endl;
+    std::cout << "NVoxels: " << NVoxels << std::endl;
 
     for(size_t i=0; i!=NEntries; ++i) {
       tt->GetEntry(i);
+
+      if (i % 10000000 == 0) {
+        std::cout << "At entry " << i << std::endl;
+      }
 
       // Set # of optical channels to 1 more than largest one seen
       if (OpChannel >= (int)fNOpChannels)
@@ -159,12 +165,15 @@ namespace phot{
       // Set the visibility at this optical channel
       fLookupTable[Voxel][OpChannel] = Visibility;
     }
+    std::cout << "Finished loop." << std::endl;
+
 
     // Go through the table and fill in any missing 0's
     for(size_t ivox=0; ivox!=NVoxels; ivox++)
     {
-      if (fLookupTable[ivox].size() < fNOpChannels)
-	fLookupTable[ivox].resize(fNOpChannels,0);
+      if (fLookupTable[ivox].size() < fNOpChannels) {
+        fLookupTable[ivox].resize(fNOpChannels,0);
+      }
     }
 
 
