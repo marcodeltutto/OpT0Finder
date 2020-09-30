@@ -40,29 +40,29 @@ class ToyMC:
         #
         pset = self.cfg.get('flashmatch::PSet')('ToyMC')
         # LightPath
-        self._qcluster_algo = self.mgr.GetCustomAlgo(pset.get('QClusterAlgo'))
+        self._qcluster_algo = self.mgr.GetCustomAlgo(pset.get('std::string')('QClusterAlgo'))
         # PE variation on (fake) reconstructed flash
-        self._pe_variation = float(pset.get('PEVariation'))
+        self._pe_variation = float(pset.get('double')('PEVariation'))
         # Photon estimation variation
-        self._ly_variation = float(pset.get('LightYieldVariation'))
+        self._ly_variation = float(pset.get('double')('LightYieldVariation'))
         # time algorithm keyword
-        self._time_algo = str(pset.get('TimeAlgo'))
+        self._time_algo = str(pset.get('std::string')('TimeAlgo'))
         # track algorithm keyword
-        self._track_algo = str(pset.get('TrackAlgo'))
+        self._track_algo = str(pset.get('std::string')('TrackAlgo'))
         # Number of tracks to generate at once
-        self._num_tracks = int(pset.get('NumTracks'))
+        self._num_tracks = int(pset.get('int')('NumTracks'))
         # Period in micro-seconds
-        self._periodTPC = ast.literal_eval(pset.get('PeriodTPC'))
-        self._periodPMT = ast.literal_eval(pset.get('PeriodPMT'))
+        self._periodTPC = ast.literal_eval(pset.get('std::string')('PeriodTPC'))
+        self._periodPMT = ast.literal_eval(pset.get('std::string')('PeriodPMT'))
         # Minimum track length to be registered for matching
-        self._min_track_length = float(pset.get("MinTrackLength"))
+        self._min_track_length = float(pset.get('double')("MinTrackLength"))
         # Minimum PE to be registered for matching
-        self._min_flash_pe = float(pset.get("MinFlashPE"))
+        self._min_flash_pe = float(pset.get('double')("MinFlashPE"))
         # Truncate TPC tracks (readout effect)
-        self._truncate_tpc = int(pset.get("TruncateTPC"))
+        self._truncate_tpc = int(pset.get('double')("TruncateTPC"))
         # Set seed if there is any specified
         if pset.contains_value('NumpySeed'):
-            seed = int(pset.get('NumpySeed'))
+            seed = int(pset.get('double')('NumpySeed'))
             if seed < 0:
                 import time
                 seed = int(time.time())
@@ -318,8 +318,14 @@ class ToyMC:
         Returns
           a list of geoalgo::Trajectory objects
         """
-        xmin, ymin, zmin = self.det.ActiveVolume().Min()
-        xmax, ymax, zmax = self.det.ActiveVolume().Max()
+        # xmin, ymin, zmin = self.det.ActiveVolume().Min()
+        xmin = self.det.ActiveVolume().Min()[0]
+        ymin = self.det.ActiveVolume().Min()[1]
+        zmin = self.det.ActiveVolume().Min()[2]
+        # xmax, ymax, zmax = self.det.ActiveVolume().Max()
+        xmax = self.det.ActiveVolume().Max()[0]
+        ymax = self.det.ActiveVolume().Max()[1]
+        zmax = self.det.ActiveVolume().Max()[2]
         res = []
         for i in range(num_tracks):
             trj = geoalgo.Trajectory(2, 3)  # 2 points, 3d
@@ -452,6 +458,15 @@ def demo(cfg_file,repeat=17,num_tracks=None,out_file='',particleana=None,opflash
             track_v, pmt_v, tpc_v, raw_tpc_v = mgr.read_input(event)
         # Run matching
         match_v = mgr.match(tpc_v, pmt_v)
+
+        # print('Plotting...')
+        # import plotly.graph_objects as go
+        # from visualization import plot_flash, plotly_layout3d
+        # layout = plotly_layout3d()
+        # scatter3d = plot_flash(mgr, pmt_v[0].pe_v)
+        # fig = go.Figure(data=scatter3d, layout=layout)
+        # fig.show()
+        # input('Press enter...')
 
         #tpc_v = [flashmatch.as_ndarray(tpc) for tpc in tpc_v]
         #pmt_v = [flashmatch.as_ndarray(pmt) for pmt in pmt_v]
