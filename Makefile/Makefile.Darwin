@@ -1,10 +1,10 @@
 #COMPILER:
 CC              = gcc
-CXX             = $(LARCV_CXX)
+CXX             = $(FMATCH_CXX)
 #LINKER          = libtool
 #SOMAKER         = libtool 
-LINKER          = $(LARCV_CXX)
-SOMAKER         = $(LARCV_CXX)
+LINKER          = $(FMATCH_CXX)
+SOMAKER         = $(FMATCH_CXX)
 
 #######"-O" FLAG: (not always ideal with debugging info)
 CFLAGS          += -O3
@@ -71,6 +71,6 @@ AFLAGS          += -static
 #ALTERNATIVE: checks symbols at run-time only -> disable for debugging
 #SOFLAGS         += -undefined dynamic_lookup # for libtool
 
-SOFLAGS += -g -shared 
+SOFLAGS += -g -shared
 
 
